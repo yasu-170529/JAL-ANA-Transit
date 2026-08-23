@@ -1,6 +1,7 @@
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  
+  res.setHeader('Cache-Control', 's-maxage=3600');
+
   const operator = req.query.operator;
 
   if (!operator || !['JAL', 'ANA'].includes(operator)) {
@@ -15,14 +16,8 @@ module.exports = async (req, res) => {
   try {
     const url = `https://api.odpt.org/api/v4/odpt:FlightSchedule?odpt:operator=odpt.Operator:${operator}&acl:consumerKey=${token}`;
     const response = await fetch(url);
-    const text = await response.text();
-    
-    // デバッグ：最初の200文字を確認
-    return res.status(200).json({ 
-      status: response.status,
-      preview: text.substring(0, 200),
-      tokenLength: token.length
-    });
+    const data = await response.json();
+    return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

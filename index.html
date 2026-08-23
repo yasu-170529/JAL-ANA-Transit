@@ -221,7 +221,7 @@ function setAirline(mode){
 }
 
 // サーバー経由でODPTデータを取得（トークンはサーバー側で管理）
-async function fetchSchedule(operator){
+  async function fetchSchedule(operator){
   if(scheduleCache[operator]) return scheduleCache[operator];
   const res = await fetch(`/api/flight?operator=${operator}`);
   if(!res.ok){
@@ -229,8 +229,10 @@ async function fetchSchedule(operator){
     throw new Error(err.error||`APIエラー (${res.status})`);
   }
   const data = await res.json();
-  scheduleCache[operator] = data;
-  return data;
+  // dataが配列でない場合の対処
+  const arr = Array.isArray(data) ? data : (data.error ? (() => { throw new Error(data.error); })() : []);
+  scheduleCache[operator] = arr;
+  return arr;
 }
 
 function extractFlights(rawData, opKey, fromAP, toAP, afterMin, dateStr){

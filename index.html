@@ -229,10 +229,67 @@ function setAirline(mode){
     throw new Error(err.error||`APIエラー (${res.status})`);
   }
   const data = await res.json();
-  // dataが配列でない場合の対処
-  const arr = Array.isArray(data) ? data : (data.error ? (() => { throw new Error(data.error); })() : []);
+  if(data.error) throw new Error(data.error);
+  const arr = Array.isArray(data) ? data : [];
   scheduleCache[operator] = arr;
   return arr;
+}
+
+function extractFlights(rawData, opKey, fromAP, toAP, afterMin, dateStr){
+  const DAY_MAP_LOCAL={'Sunday':0,'Monday':1,'Tuesday':2,'Wednesday':3,'Thursday':4,'Friday':5,'Saturday':6};
+  const dow = new Date(dateStr).getDay();
+  const results=[];
+  rawData.forEach(item=>{
+    // 加工済みデータの場合（api/flight.jsがフラット化したデータ）
+    if(item.from && item.dep && item.flight){
+      const origin = item.from;
+      const dest = item.to;
+      if(fromAP!=='ALL'&&origin!==fromAP) return;
+      if(toAP!=='ALL'&&dest!==toAP) return;
+      if(item.depMin < afterMin) return;
+      // カレンダーチェック
+      const cal = item.calendar || 'Everyday';
+      if(cal==='Weekday' && (dow===0||dow===6)) return;
+      if(cal==='SaturdayHoliday'||cal==='Weekend'){if(dow>=1&&dow<=5)return;}
+      if(DAY_MAP_LOCAL.hasOwnProperty(cal)&&DAY_MAP_LOCAL[cal]!==dow) return;
+      // 有効期間チェック
+      if(item.validFrom && new Date(dateStr)<new Date(item.validFrom)) return;
+      if(item.validTo && new Date(dateStr)>new Date(item.validTo)) return;
+      results.push({
+        id: item.id || `${origin}${dest}${item.dep}${item.flight}`,
+        from:origin, to:dest,
+        dep:item.dep, arr:item.arr,
+        depMin:item.depMin, arrMin:item.arrMin, dur:item.dur,
+        airline:item.airline, flight:item.flight,
+      });
+      return;
+    }
+    // 生ODPTデータの場合（フォールバック）
+    const origin=extractCode(item['odpt:originAirport']);
+    const dest=extractCode(item['odpt:destinationAirport']);
+    if(fromAP!=='ALL'&&origin!==fromAP) return;
+    if(toAP!=='ALL'&&dest!==toAP) return;
+    if(!isOperatingOn(item,dateStr)) return;
+    (item['odpt:flightScheduleObject']||[]).forEach(obj=>{
+      if(!isValidOn(obj,dateStr)) return;
+      const dep=obj['odpt:originTime'];
+      const arr=obj['odpt:destinationTime'];
+      if(!dep||!arr) return;
+      const depMin=toMin(dep);
+      if(depMin<afterMin) return;
+      let arrMin=toMin(arr);
+      if(arrMin<depMin) arrMin+=1440;
+      const dur=arrMin-depMin;
+      const fNums=obj['odpt:flightNumber']||[];
+      const fNum=Array.isArray(fNums)?fNums[0]:fNums;
+      const airline=airlineFromFlightNum(fNum,opKey);
+      results.push({
+        id:`${origin}${dest}${dep}${fNum}`,
+        from:origin,to:dest,dep,arr,depMin,arrMin,dur,airline,flight:fNum||opKey,
+      });
+    });
+  });
+  return results;
 }
 
 function extractFlights(rawData, opKey, fromAP, toAP, afterMin, dateStr){

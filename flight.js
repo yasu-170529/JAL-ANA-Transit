@@ -1,42 +1,43 @@
-// api/flight.js
-// このファイルがサーバー側で動きます。トークンはユーザーに見えません。
+export const config = {
+  runtime: 'edge',
+};
 
-export default async function handler(req, res) {
-  // CORSヘッダー（ブラウザからのアクセスを許可）
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+export default async function handler(req) {
+  const { searchParams } = new URL(req.url);
+  const operator = searchParams.get('operator');
 
-  const { operator } = req.query;
-
-  // operatorのバリデーション（JALまたはANAのみ許可）
   if (!operator || !['JAL', 'ANA'].includes(operator)) {
-    return res.status(400).json({ error: 'operatorはJALまたはANAを指定してください' });
+    return new Response(JSON.stringify({ error: 'operatorはJALまたはANAを指定してください' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
-  // トークンはVercelの環境変数から取得（外部には公開されない）
   const token = process.env.ODPT_TOKEN;
   if (!token) {
-    return res.status(500).json({ error: 'サーバー設定エラー：トークンが設定されていません' });
+    return new Response(JSON.stringify({ error: 'トークンが設定されていません' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   try {
     const url = `https://api.odpt.org/api/v4/odpt:FlightSchedule?odpt:operator=odpt.Operator:${operator}&acl:consumerKey=${token}`;
     const response = await fetch(url);
-
-    if (!response.ok) {
-      return res.status(response.status).json({ error: `ODPTエラー: ${response.status}` });
-    }
-
     const data = await response.json();
 
-    // キャッシュ設定（1時間キャッシュ）
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
-    return res.status(200).json(data);
-
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 's-maxage=3600',
+      },
+    });
   } catch (error) {
-    return res.status(500).json({ error: 'データ取得に失敗しました: ' + error.message });
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }

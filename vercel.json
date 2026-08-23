@@ -1,6 +1,5 @@
 {
-  "routes": [
-    { "src": "/api/flight", "dest": "/flight.js" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }

@@ -134,28 +134,59 @@ const JAL_AFF_VALUE = '';
 // =====================================================
 
 const AIRPORTS = [
-  {code:'HND',name:'東京（羽田）',mct:30},{code:'NRT',name:'東京（成田）',mct:30},
-  {code:'CTS',name:'札幌（新千歳）',mct:20},{code:'OKD',name:'札幌（丘珠）',mct:20},
-  {code:'HKD',name:'函館',mct:20},{code:'AXT',name:'秋田',mct:20},
-  {code:'SDJ',name:'仙台',mct:20},{code:'KIJ',name:'新潟',mct:20},
-  {code:'NGO',name:'名古屋（中部）',mct:20},{code:'ITM',name:'大阪（伊丹）',mct:20},
-  {code:'KIX',name:'大阪（関西）',mct:20},{code:'HIJ',name:'広島',mct:20},
-  {code:'OKJ',name:'岡山',mct:20},{code:'TAK',name:'高松',mct:20},
-  {code:'MYJ',name:'松山',mct:20},{code:'FUK',name:'福岡',mct:20},
-  {code:'KMJ',name:'熊本',mct:20},{code:'OIT',name:'大分',mct:20},
-  {code:'KOJ',name:'鹿児島',mct:20},{code:'NGS',name:'長崎',mct:20},
-  {code:'KMI',name:'宮崎',mct:20},{code:'OKA',name:'沖縄（那覇）',mct:30},
-  {code:'ISG',name:'石垣',mct:20},{code:'MMY',name:'宮古',mct:20},
-  {code:'WKJ',name:'稚内',mct:20},{code:'MBE',name:'紋別',mct:20},
-  {code:'MMB',name:'女満別',mct:20},{code:'AKJ',name:'旭川',mct:20},
-  {code:'SHB',name:'根室中標津',mct:20},{code:'KUH',name:'釧路',mct:20},
-  {code:'OBO',name:'帯広',mct:20},{code:'RIS',name:'利尻',mct:20},
-  {code:'OIR',name:'奥尻',mct:20},{code:'SHI',name:'下地島',mct:20},
-  {code:'MSJ',name:'三沢',mct:20},{code:'AOJ',name:'青森',mct:20},
-  {code:'KCZ',name:'高知',mct:20},{code:'TKS',name:'徳島',mct:20},
-  {code:'UBJ',name:'山口宇部',mct:20},{code:'AMM',name:'奄美大島',mct:20},
-  {code:'TKN',name:'徳之島',mct:20},{code:'OKE',name:'沖永良部',mct:20},
-  {code:'TRA',name:'多良間',mct:20},{code:'OGN',name:'与那国',mct:20},
+  // ── 主要空港 ──
+  {code:'HND',name:'東京（羽田）',mct:30},
+  {code:'CTS',name:'札幌（新千歳）',mct:20},
+  {code:'ITM',name:'大阪（伊丹）',mct:20},
+  {code:'KIX',name:'大阪（関西）',mct:20},
+  {code:'FUK',name:'福岡',mct:20},
+  {code:'OKA',name:'沖縄（那覇）',mct:30},
+  // ── 北海道 ──
+  {code:'AKJ',name:'旭川',mct:20},
+  {code:'MMB',name:'女満別',mct:20},
+  {code:'SHB',name:'根室中標津',mct:20},
+  {code:'KUH',name:'釧路',mct:20},
+  {code:'OBO',name:'帯広',mct:20},
+  {code:'HKD',name:'函館',mct:20},
+  {code:'OKD',name:'札幌（丘珠）',mct:20},
+  {code:'WKJ',name:'稚内',mct:20},
+  {code:'MBE',name:'紋別',mct:20},
+  {code:'RIS',name:'利尻',mct:20},
+  {code:'OIR',name:'奥尻',mct:20},
+  // ── 東北 ──
+  {code:'AOJ',name:'青森',mct:20},
+  {code:'MSJ',name:'三沢',mct:20},
+  {code:'AXT',name:'秋田',mct:20},
+  {code:'SDJ',name:'仙台',mct:20},
+  // ── 関東 ──
+  {code:'NRT',name:'東京（成田）',mct:30},
+  {code:'KIJ',name:'新潟',mct:20},
+  // ── 中部 ──
+  {code:'NGO',name:'名古屋（中部）',mct:20},
+  // ── 近畿 ──
+  // ── 中国・四国 ──
+  {code:'HIJ',name:'広島',mct:20},
+  {code:'OKJ',name:'岡山',mct:20},
+  {code:'UBJ',name:'山口宇部',mct:20},
+  {code:'TAK',name:'高松',mct:20},
+  {code:'MYJ',name:'松山',mct:20},
+  {code:'TKS',name:'徳島',mct:20},
+  {code:'KCZ',name:'高知',mct:20},
+  // ── 九州 ──
+  {code:'NGS',name:'長崎',mct:20},
+  {code:'KMJ',name:'熊本',mct:20},
+  {code:'OIT',name:'大分',mct:20},
+  {code:'KMI',name:'宮崎',mct:20},
+  {code:'KOJ',name:'鹿児島',mct:20},
+  {code:'AMM',name:'奄美大島',mct:20},
+  {code:'TKN',name:'徳之島',mct:20},
+  {code:'OKE',name:'沖永良部',mct:20},
+  // ── 沖縄 ──
+  {code:'MMY',name:'宮古',mct:20},
+  {code:'ISG',name:'石垣',mct:20},
+  {code:'SHI',name:'下地島',mct:20},
+  {code:'TRA',name:'多良間',mct:20},
+  {code:'OGN',name:'与那国',mct:20},
 ];
 
 const JAL_ALS = ['JAL','JTA','JAC','RAC'];

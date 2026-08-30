@@ -440,8 +440,7 @@ function init(){
   const from=document.getElementById('sel-from');
   const to=document.getElementById('sel-to');
   const unique=[]; const seen=new Set();
-  AIRPORTS.forEach(ap=>{ if(!seen.has(ap.code)){ seen.add(ap.code); unique.push(ap); } });
-  unique.sort((a,b)=>a.code.localeCompare(b.code));
+    AIRPORTS.forEach(ap=>{ if(!seen.has(ap.code)){ seen.add(ap.code); unique.push(ap); } });
   unique.forEach(ap=>{
     from.add(new Option(`${ap.code}　${ap.name}`,ap.code));
     to.add(new Option(`${ap.code}　${ap.name}`,ap.code));
